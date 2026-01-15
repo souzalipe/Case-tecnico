@@ -1,6 +1,15 @@
+USE_AI_CLASSIFIER = False  # Defina como True para usar o classificador AI, False para usar a classificação baseada em regras
+
+import logging
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+    )
+
 
 app = FastAPI()
 
@@ -13,7 +22,7 @@ def home(request: Request):
         {"request": request}
     )
 
-def classify_email_rule_based(email_text: str) -> str:
+def classify_email_rule_based(email_text: str) -> str: # Classificação simples baseada em palavras-chave
     productive_keywords = [
         "reunião", 
         "projeto", 
@@ -25,7 +34,7 @@ def classify_email_rule_based(email_text: str) -> str:
         "follow-up"
         ]
     
-    text_lower = email_text.lower()
+    text_lower = email_text.lower() # Converte o texto para minúsculas para facilitar a comparação
     
     for keyword in productive_keywords:
         if keyword in text_lower:
@@ -33,10 +42,23 @@ def classify_email_rule_based(email_text: str) -> str:
     
     return "Não Produtivo"
 
-@app.post("/process", response_class=HTMLResponse)
-def process_email(request: Request, email_text: str = Form(...)):
+def classify_email(text: str) -> str: # Centralizei a classificação aqui escalabilização futura
+    
+    if USE_AI_CLASSIFIER:
+        return classify_email_ai(text)
+    else: 
+        return classify_email_rule_based(text)
+    
+    return classify_email_rule_based(text) # Por enqunato classifica os emails pela regra simples 
 
-    category = classify_email_rule_based(email_text)
+def classify_email_ai(text: str) -> str: # Classificação usando modelo AI
+    
+    return "Produtivo" # Placeholder para integração futura com modelo AI
+
+@app.post("/process", response_class=HTMLResponse)
+def process_email(request: Request, email_text: str = Form(...)): # O "Form(...)" é importante porque diz -> “esse valor vem de um formulário HTML (POST)” e precisa ser importado
+
+    category = classify_email(email_text)
 
     return templates.TemplateResponse(
         "result.html",
