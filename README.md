@@ -1,0 +1,1 @@
+Aplicação web que utiliza inteligência artificial para classificar emails como produtivos ou improdutivos e sugerir respostas automáticas, com foco em automação de processos e ganho de eficiência operacional.
