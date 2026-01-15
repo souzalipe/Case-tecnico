@@ -42,14 +42,23 @@ def classify_email_rule_based(email_text: str) -> str: # Classificação simples
     
     return "Não Produtivo"
 
-def classify_email(text: str) -> str: # Centralizei a classificação aqui escalabilização futura
-    
-    if USE_AI_CLASSIFIER:
-        return classify_email_ai(text)
-    else: 
-        return classify_email_rule_based(text)
-    
-    return classify_email_rule_based(text) # Por enqunato classifica os emails pela regra simples 
+def classify_email(text: str) -> str:
+    strategy = "AI" if USE_AI_CLASSIFIER else "RULE_BASED"
+    result = (
+        classify_email_ai(text)
+        if USE_AI_CLASSIFIER
+        else classify_email_rule_based(text)
+    )
+
+    logging.info(
+        "Classification executed | strategy=%s | result=%s | text_preview=%s",
+        strategy,
+        result,
+        text[:80].replace("\n", " ")
+    )
+
+    return result
+
 
 def classify_email_ai(text: str) -> str: # Classificação usando modelo AI
     
