@@ -13,10 +13,30 @@ def home(request: Request):
         {"request": request}
     )
 
+def classify_email_rule_based(email_text: str) -> str:
+    productive_keywords = [
+        "reunião", 
+        "projeto", 
+        "prazo", 
+        "relatório"
+        "entrega",
+        "cliente",
+        "alinhamento",
+        "follow-up"
+        ]
+    
+    text_lower = email_text.lower()
+    
+    for keyword in productive_keywords:
+        if keyword in text_lower:
+            return "Produtivo"
+    
+    return "Não Produtivo"
+
 @app.post("/process", response_class=HTMLResponse)
 def process_email(request: Request, email_text: str = Form(...)):
-    # CLASSIFICAÇÃO TEMPORÁRIA (fake)
-    category = "Produtivo"
+
+    category = classify_email_rule_based(email_text)
 
     return templates.TemplateResponse(
         "result.html",
