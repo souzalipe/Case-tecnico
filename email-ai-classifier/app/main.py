@@ -4,6 +4,8 @@ import logging
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from app.classifiers.email_classifier import classify_email
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -45,7 +47,7 @@ def classify_email_rule_based(email_text: str) -> str: # Classificação simples
 def classify_email(text: str) -> str:
     strategy = "AI" if USE_AI_CLASSIFIER else "RULE_BASED"
     result = (
-        classify_email_ai(text)
+        classify_email(text) # Foi Aqui < -----------------------
         if USE_AI_CLASSIFIER
         else classify_email_rule_based(text)
     )
