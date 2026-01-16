@@ -1,4 +1,6 @@
 fastapi
-uvicorn[standard]
-python-multipart
+uvicorn
 jinja2
+transformers
+torch==2.1.2
+numpy<2
